@@ -1,0 +1,22 @@
+body{
+    display: flex; align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: black;
+}
+table {
+    border-collapse: collapse;;
+  }
+  
+  table, th, td {
+    border: 2px solid white;
+  }
+
+  th,td{
+      width: 30px;
+      height: 30px;
+  }
+
+div{
+    height: 10px;
+}

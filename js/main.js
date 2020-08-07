@@ -11,20 +11,40 @@ let turn;
 let computerGrid;
 let playerGrid;
 /*----- cached element references -----*/
+let playerGridEl = document.getElementById('playerGrid')
+let computerGridEl = document.getElementById('computerGrid')
 /*----- event listeners -----*/
 /*----- functions -----*/
 function init(){
-  gridInitalize();
-    
+    gridInitalize();
+    render();
 }
 
+
+
+function render(){
+    gridElInitialize();
+}
+
+//Grid Initialization functions
 function gridInitalize(){
     for(let i = 0; i<10; i++){
         playerGrid = Array(10);
         computerGrid = Array(10);
     }
 }
+function gridElInitialize(){
+    for(let i = 0; i< 10; i++){
+        let rowP = playerGridEl.insertRow(i);
+        let rowC = computerGridEl.insertRow(i);
+        for(let j = 0; j< 10; j++){
+            rowP.insertCell(j);
+            rowC.insertCell(j);
+        }
+    }
+}
 
+init();
 
 
 /* Pseudo Notes 
