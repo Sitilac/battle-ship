@@ -1,8 +1,29 @@
 /*----- constants -----*/
+const ships = {
+    carrier: 5,
+    battleship: 4,
+    submarine: 3,
+    cruiser: 2,
+    destroyer: 1
+}
 /*----- app's state (variables) -----*/
+let turn;
+let computerGrid;
+let playerGrid;
 /*----- cached element references -----*/
 /*----- event listeners -----*/
 /*----- functions -----*/
+function init(){
+  gridInitalize();
+    
+}
+
+function gridInitalize(){
+    for(let i = 0; i<10; i++){
+        playerGrid = Array(10);
+        computerGrid = Array(10);
+    }
+}
 
 
 
