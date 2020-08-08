@@ -1,51 +1,69 @@
 /*----- constants -----*/
 const ships = {
-    carrier: 5,
-    battleship: 4,
-    submarine: 3,
-    cruiser: 2,
-    destroyer: 1
-}
+  carrier: 5,
+  battleship: 4,
+  submarine: 3,
+  cruiser: 2,
+  destroyer: 1,
+};
 /*----- app's state (variables) -----*/
 let turn;
 let computerGrid;
 let playerGrid;
 /*----- cached element references -----*/
-let playerGridEl = document.getElementById('playerGrid')
-let computerGridEl = document.getElementById('computerGrid')
+let playerGridEl = document.getElementById("playerGrid");
+let computerGridEl = document.getElementById("computerGrid");
 /*----- event listeners -----*/
 /*----- functions -----*/
-function init(){
-    gridInitalize();
-    render();
+function init() {
+  gridInitalize();
+  render();
 }
 
-
-
-function render(){
-    gridElInitialize();
+function render() {
+  gridElInitialize();
 }
 
+function computerPosInit() {
+  const entries = Object.entries(ships);
+  for (const [key, value] of Object.entries(ships)) {
+    console.log(`${key}: ${value}`);
+    let randX = Math.floor(Math.random() * 10);
+    let randY = Math.floor(Math.random() * 10);
+    for (let i = 0; i < value; i++) {
+      if (10 - randX <= value && 10 - randY < value) {
+        computerGrid[randX][randY + i] = 1;
+      } else if (10 - randY < value) {
+        computerGrid[randX + 1][randY] = 1;
+      }
+    }
+  }
+}
 //Grid Initialization functions
-function gridInitalize(){
-    for(let i = 0; i<10; i++){
-        playerGrid = Array(10);
-        computerGrid = Array(10);
+function gridInitalize() {
+  playerGrid = [];
+  computerGrid = [];
+  for (let i = 0; i < 10; i++) {
+    playerGrid.push([]);
+    computerGrid.push([]);
+    for (let j = 0; j < 10; j++) {
+      playerGrid[i][j] = 0;
+      computerGrid[i][j] = 0;
     }
+  }
 }
-function gridElInitialize(){
-    for(let i = 0; i< 10; i++){
-        let rowP = playerGridEl.insertRow(i);
-        let rowC = computerGridEl.insertRow(i);
-        for(let j = 0; j< 10; j++){
-            rowP.insertCell(j);
-            rowC.insertCell(j);
-        }
+function gridElInitialize() {
+  for (let i = 0; i < 10; i++) {
+    let rowP = playerGridEl.insertRow(i);
+    let rowC = computerGridEl.insertRow(i);
+    for (let j = 0; j < 10; j++) {
+      rowP.insertCell(j);
+      rowC.insertCell(j);
     }
+  }
 }
 
 init();
-
 
 /* Pseudo Notes 
 
