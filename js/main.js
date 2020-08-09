@@ -6,7 +6,7 @@ const ships = {
   cruiser: 2,
   destroyer: 1,
 };
-const letterArray = ['A','B','C','D','E','F','G','H','I','J']
+const letterArray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 /*----- app's state (variables) -----*/
 let turn;
 let computerGrid;
@@ -25,10 +25,16 @@ const computerShips = {
   cruiser: [],
   destroyer: [],
 };
+let computerPositions = [];
 /*----- cached element references -----*/
 let playerGridEl = document.getElementById("playerGrid");
 let computerGridEl = document.getElementById("computerGrid");
 /*----- event listeners -----*/
+computerGridEl.addEventListener("click", function(e){
+   let cellIndex = e.target.cellIndex;
+   let rowIndex = e.target.parentElement.rowIndex;
+   playerHitCheck(cellIndex,rowIndex);
+});
 /*----- functions -----*/
 function init() {
   gridInitalize();
@@ -41,7 +47,7 @@ function render() {
 }
 
 function computerPosInit() {
-  const entries = Object.entries(ships);
+  //const entries = Object.entries(ships);
   for (const [key, value] of Object.entries(ships)) {
     console.log(`${key}: ${value}`);
     //Random values for computer X and Y coordinates
@@ -51,24 +57,37 @@ function computerPosInit() {
     for (let i = 0; i < value; i++) {
       if (10 - randX <= value) {
         computerShips[key].push([randX - i, randY]);
+        computerPositions.push([randX - i, randY]);
         computerGrid[randX - i][randY] = 1;
       } else if (10 - randX > value) {
         computerShips[key].push([randX + i, randY]);
+        computerPositions.push([randX + i, randY]);
         computerGrid[randX + i][randY] = 1;
       }
     }
   }
 }
+
 function rand() {
   return Math.floor(Math.random() * 10);
+}
+
+function playerHitCheck(cellIndex, rowIndex){
+    let compareArray = [];
+    compareArray.push([rowIndex-1,cellIndex-1]);
+    console.log(compareArray)
+    console.log(findCoord(computerPositions,compareArray[0]));
+    if(findCoord(computerPositions,compareArray)){
+        console.log("Hit");
+    }
 }
 function findCoord(arr, coord) {
   for (let i = 0; i < arr.length; i++) {
     if (arr[i][0] === coord[0] && arr[i][1] === coord[1]) {
       return true;
     }
-    return false;
   }
+  return false;
 }
 //Grid Initialization functions
 function gridInitalize() {
@@ -94,15 +113,24 @@ function gridElInitialize() {
   }
   gridLetterInit();
 }
-function gridLetterInit(){
-    for(let i = 1; i < 11; i++){
-        playerGridEl.rows[0].cells[i].innerText = `${i}`;
-        playerGridEl.rows[i].cells[0].innerText = letterArray[i-1];
-        computerGridEl.rows[i].cells[0].innerText = letterArray[i-1];
-        computerGridEl.rows[0].cells[i].innerText = `${i}`;
-        
+
+function gridLetterInit() {
+  for (let i = 1; i < 11; i++) {
+    playerGridEl.rows[0].cells[i].innerText = `${i}`;
+    playerGridEl.rows[i].cells[0].innerText = letterArray[i - 1];
+    computerGridEl.rows[i].cells[0].innerText = letterArray[i - 1];
+    computerGridEl.rows[0].cells[i].innerText = `${i}`;
+  }
+  gridIdInit();
+}
+function gridIdInit() {
+  for (let i = 1; i < 11; i++) {
+    for (let j = 1; j < 11; j++) {
+      playerGridEl.rows[i].cells[j].id = `[${i - 1}, ${j - 1}]`;
+      computerGridEl.rows[i].cells[j].id = `[${i - 1}, ${j - 1}]`;
     }
-    }
+  }
+}
 
 init();
 
