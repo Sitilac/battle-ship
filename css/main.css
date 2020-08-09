@@ -6,6 +6,8 @@ body{
 }
 table {
     border-collapse: collapse;;
+    color: white;
+    text-align: center;
   }
   
   table, th, td {

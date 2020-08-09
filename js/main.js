@@ -6,24 +6,25 @@ const ships = {
   cruiser: 2,
   destroyer: 1,
 };
+const letterArray = ['A','B','C','D','E','F','G','H','I','J']
 /*----- app's state (variables) -----*/
 let turn;
 let computerGrid;
 let playerGrid;
 const playerShips = {
-    carrier: [],
-    battleship:[] ,
-    submarine:[] ,
-    cruiser: [],
-    destroyer: [],
-  }
-  const computerShips = {
-    carrier: [],
-    battleship:[] ,
-    submarine:[] ,
-    cruiser:[] ,
-    destroyer:[] ,
-  }
+  carrier: [],
+  battleship: [],
+  submarine: [],
+  cruiser: [],
+  destroyer: [],
+};
+const computerShips = {
+  carrier: [],
+  battleship: [],
+  submarine: [],
+  cruiser: [],
+  destroyer: [],
+};
 /*----- cached element references -----*/
 let playerGridEl = document.getElementById("playerGrid");
 let computerGridEl = document.getElementById("computerGrid");
@@ -40,34 +41,34 @@ function render() {
 }
 
 function computerPosInit() {
-    const entries = Object.entries(ships);
-    for (const [key, value] of Object.entries(ships)) {
-      console.log(`${key}: ${value}`);
-      //Random values for computer X and Y coordinates
-      let randX = rand();
-      let randY = rand();
-      //For loop to draw the computer's ship position on the grid.
-      for (let i = 0; i < value; i++) {
-        if(10 - randX <= value){
-          computerShips[key].push([(randX - i),randY]);
-          computerGrid[randX - i][randY] = 1;
-        }else if(10 - randX > value){
-          computerShips[key].push([(randX + i),randY]);
-          computerGrid[randX + i][randY] = 1;
+  const entries = Object.entries(ships);
+  for (const [key, value] of Object.entries(ships)) {
+    console.log(`${key}: ${value}`);
+    //Random values for computer X and Y coordinates
+    let randX = rand();
+    let randY = rand();
+    //For loop to draw the computer's ship position on the grid.
+    for (let i = 0; i < value; i++) {
+      if (10 - randX <= value) {
+        computerShips[key].push([randX - i, randY]);
+        computerGrid[randX - i][randY] = 1;
+      } else if (10 - randX > value) {
+        computerShips[key].push([randX + i, randY]);
+        computerGrid[randX + i][randY] = 1;
       }
     }
   }
-  }
-  function rand(){
-    return Math.floor(Math.random() * 10);
-  }
-function findCoord(arr, coord){
-    for (let i = 0; i < arr.length; i++){
-        if(arr[i][0] === coord[0] && arr[i][1] === coord[1]){
-            return true;
-        }
-        return false;
+}
+function rand() {
+  return Math.floor(Math.random() * 10);
+}
+function findCoord(arr, coord) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i][0] === coord[0] && arr[i][1] === coord[1]) {
+      return true;
     }
+    return false;
+  }
 }
 //Grid Initialization functions
 function gridInitalize() {
@@ -83,15 +84,25 @@ function gridInitalize() {
   }
 }
 function gridElInitialize() {
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 11; i++) {
     let rowP = playerGridEl.insertRow(i);
     let rowC = computerGridEl.insertRow(i);
-    for (let j = 0; j < 10; j++) {
+    for (let j = 0; j < 11; j++) {
       rowP.insertCell(j);
       rowC.insertCell(j);
     }
   }
+  gridLetterInit();
 }
+function gridLetterInit(){
+    for(let i = 1; i < 11; i++){
+        playerGridEl.rows[0].cells[i].innerText = `${i}`;
+        playerGridEl.rows[i].cells[0].innerText = letterArray[i-1];
+        computerGridEl.rows[i].cells[0].innerText = letterArray[i-1];
+        computerGridEl.rows[0].cells[i].innerText = `${i}`;
+        
+    }
+    }
 
 init();
 
