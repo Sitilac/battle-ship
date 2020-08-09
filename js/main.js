@@ -10,6 +10,20 @@ const ships = {
 let turn;
 let computerGrid;
 let playerGrid;
+const playerShips = {
+    carrier: [],
+    battleship:[] ,
+    submarine:[] ,
+    cruiser: [],
+    destroyer: [],
+  }
+  const computerShips = {
+    carrier: [],
+    battleship:[] ,
+    submarine:[] ,
+    cruiser:[] ,
+    destroyer:[] ,
+  }
 /*----- cached element references -----*/
 let playerGridEl = document.getElementById("playerGrid");
 let computerGridEl = document.getElementById("computerGrid");
@@ -18,6 +32,7 @@ let computerGridEl = document.getElementById("computerGrid");
 function init() {
   gridInitalize();
   render();
+  computerPosInit();
 }
 
 function render() {
@@ -25,19 +40,34 @@ function render() {
 }
 
 function computerPosInit() {
-  const entries = Object.entries(ships);
-  for (const [key, value] of Object.entries(ships)) {
-    console.log(`${key}: ${value}`);
-    let randX = Math.floor(Math.random() * 10);
-    let randY = Math.floor(Math.random() * 10);
-    for (let i = 0; i < value; i++) {
-      if (10 - randX <= value && 10 - randY < value) {
-        computerGrid[randX][randY + i] = 1;
-      } else if (10 - randY < value) {
-        computerGrid[randX + 1][randY] = 1;
+    const entries = Object.entries(ships);
+    for (const [key, value] of Object.entries(ships)) {
+      console.log(`${key}: ${value}`);
+      //Random values for computer X and Y coordinates
+      let randX = rand();
+      let randY = rand();
+      //For loop to draw the computer's ship position on the grid.
+      for (let i = 0; i < value; i++) {
+        if(10 - randX <= value){
+          computerShips[key].push([(randX - i),randY]);
+          computerGrid[randX - i][randY] = 1;
+        }else if(10 - randX > value){
+          computerShips[key].push([(randX + i),randY]);
+          computerGrid[randX + i][randY] = 1;
       }
     }
   }
+  }
+  function rand(){
+    return Math.floor(Math.random() * 10);
+  }
+function findCoord(arr, coord){
+    for (let i = 0; i < arr.length; i++){
+        if(arr[i][0] === coord[0] && arr[i][1] === coord[1]){
+            return true;
+        }
+        return false;
+    }
 }
 //Grid Initialization functions
 function gridInitalize() {
