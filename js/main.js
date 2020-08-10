@@ -91,18 +91,70 @@ function computerPosInit() {
     //Random values for computer X and Y coordinates
     let randX = rand();
     let randY = rand();
+    //let flag = randX > 5 ? "x" : "y";
+    let flag = "x";
+    console.log(checkDuplicate(randX, randY, flag, value));
+
     //For loop to draw the computer's ship position on the grid.
-    for (let i = 0; i < value; i++) {
-      if (10 - randX <= value) {
-        //computerShips[key].push([randX - i, randY]);
-        computer.computerPositions.push([randX - i, randY]);
-        computerGrid[randX - i][randY] = 1;
-      } else if (10 - randX > value) {
-        //computerShips[key].push([randX + i, randY]);
-        computer.computerPositions.push([randX + i, randY]);
-        computerGrid[randX + i][randY] = 1;
+    if (flag === "x") {
+      for (let i = 0; i < value; i++) {
+        if (10 - randX <= value) {
+          computer.computerPositions.push([randX - i, randY]);
+          computerGrid[randX - i][randY] = 1;
+        } else if (10 - randX > value) {
+          computer.computerPositions.push([randX + i, randY]);
+          computerGrid[randX + i][randY] = 1;
+        }
       }
     }
+  }
+}
+
+function checkDuplicate(randNumX, randNumY, flag, value) {
+  let checkArray = [];
+  checkArray.push([randNumX, randNumY]);
+
+  if (flag === "x") {
+    if (10 - randNumX <= value) {
+      for (let i = 0; i < value; i++) {
+        if (findCoord(computer.computerPositions, checkArray[0])) {
+          return true;
+        }
+        checkArray[0] =  [randNumX - i, randNumY];
+        console.log(randNumX - i, randNumY)
+        console.log(checkArray[0]);
+      }
+    }
+    if (10 - randNumX > value) {
+      for (let i = 0; i < value; i++) {
+        if (findCoord(computer.computerPositions, checkArray)) {
+          return true;
+        }
+        console.log(checkArray);
+        checkArray[0] =  [randNumX + i, randNumY];
+      }
+    }
+    return false;
+  } else if (flag === "y") {
+    if (10 - randNumY <= value) {
+      for (let i = 0; i < value; i++) {
+        if (findCoord(computer.computerPositions, checkArray)) {
+          return true;
+        }
+        checkArray.pop();
+        checkArray.push([randNumX, randNumY - i]);
+      }
+      if (10 - randNumY > value) {
+        for (let i = 0; i < value; i++) {
+          if (findCoord(computer.computerPositions, checkArray)) {
+            return true;
+          }
+          checkArray.pop();
+          checkArray.push([randNumX, randNumY + i]);
+        }
+      }
+    }
+    return false;
   }
 }
 
@@ -183,6 +235,14 @@ function computerHitCheck() {
 function findCoord(arr, coord) {
   for (let i = 0; i < arr.length; i++) {
     if (arr[i][0] === coord[0] && arr[i][1] === coord[1]) {
+      return true;
+    }
+  }
+  return false;
+}
+function findCoordArr(arr, arr2) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i][0] === arr2[i][0] && arr[i][1] === arr2[i][1]) {
       return true;
     }
   }

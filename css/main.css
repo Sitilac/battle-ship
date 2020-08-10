@@ -22,6 +22,18 @@ th,td{
 div{
     height: 10px;
 }
+.ships{
+    background-color: grey;
+}
+
+#shipsContainer{
+    margin-top:10px;
+    display:inline-grid;
+    grid-template-columns: 1fr 1fr;
+}
+#submarine{
+    grid-column: span 1;
+}
 
 h3{
     color: white;
