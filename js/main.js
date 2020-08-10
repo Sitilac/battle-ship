@@ -24,7 +24,7 @@ const computer = {
   rowIndex: 0,
   cellIndex: 0,
   computerIsHit: false,
-  computerisMiss: false,
+  computerIsMiss: false,
 };
 
 /*----- cached element references -----*/
@@ -50,6 +50,7 @@ function init() {
 }
 function playGame() {
   if (turn === "player") {
+    console.log(turn);
     playerHitCheck(cellIndex, rowIndex);
   } else if (turn === "computer") {
     computerHitCheck();
@@ -58,22 +59,26 @@ function playGame() {
   turn = turn === "player" ? "computer" : "player";
 }
 function render() {
-  if (player.playerIsHit === true) {
-    computerGridEl.rows[rowIndex].cells[cellIndex].style.backgroundColor =
-      "green";
-  } else if (player.playerIsMiss === true) {
-    computerGridEl.rows[rowIndex].cells[cellIndex].style.backgroundColor =
-      "red";
+  if (turn === "player") {
+    if (player.playerIsHit === true) {
+      computerGridEl.rows[rowIndex].cells[cellIndex].style.backgroundColor =
+        "green";
+    } else if (player.playerIsMiss === true) {
+      computerGridEl.rows[rowIndex].cells[cellIndex].style.backgroundColor =
+        "red";
+    }
+  } else if (turn === "computer") {
+    if (computer.computerIsHit === true) {
+      playerGridEl.rows[computer.rowIndex + 1].cells[
+        computer.cellIndex + 1
+      ].bgColor = "green";
+    } else if (computer.computerIsMiss === true) {
+      playerGridEl.rows[computer.rowIndex + 1].cells[
+        computer.cellIndex + 1
+      ].bgColor = "red";
+    }
   }
-  if (computer.computerIsHit === true) {
-    playerGridEl.rows[computer.rowIndex + 1].cells[
-      computer.cellIndex + 1
-    ].style.backroundColor = "green";
-  } else if (computer.computerisMiss === true) {
-    playerGridEl.rows[computer.rowIndex + 1].cells[
-      computer.cellIndex + 1
-    ].style.backroundColor = "red";
-  }
+
   if (player.playerHitCounter === 17) {
     alert("You win!");
   }
@@ -151,19 +156,18 @@ function computerHitCheck() {
   let compY = rand();
   let compareArray = [];
   compareArray.push([compX, compY]);
-  // while (findCoord(computer.computerGuesses, compareArray[0])) {
-  //   compX = rand();
-  //   compY = rand();
-  //   compareArray.pop();
-  //   compareArray.push([compX, compY]);
-  // }
-  //alert("entered!");
+  while (findCoord(computer.computerGuesses, compareArray[0])) {
+    compX = rand();
+    compY = rand();
+    compareArray.pop();
+    compareArray.push([compX, compY]);
+  }
   if (findCoord(player.playerPositions, compareArray[0])) {
     computer.rowIndex = compX;
     computer.cellIndex = compY;
     computer.computerGuesses.push([compX, compY]);
     computer.computerIsHit = true;
-    computer.computerisMiss = false;
+    computer.computerIsMiss = false;
     playerGrid[compX][compY] = 2;
   } else {
     computer.rowIndex = compX;
@@ -173,7 +177,8 @@ function computerHitCheck() {
     computer.computerIsMiss = true;
     computer.computerIsHit = false;
   }
-  playGame();
+  render();
+  //playGame();
 }
 function findCoord(arr, coord) {
   for (let i = 0; i < arr.length; i++) {
