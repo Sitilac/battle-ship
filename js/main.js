@@ -3,8 +3,8 @@ const ships = {
   carrier: 5,
   battleship: 4,
   submarine: 3,
-  cruiser: 2,
-  destroyer: 1,
+  cruiser: 3,
+  destroyer: 2,
 };
 const letterArray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 /*----- app's state (variables) -----*/
@@ -12,32 +12,21 @@ let turn;
 let computerGrid;
 let playerGrid;
 const player = {
-  playerGuesses:[],
-  playerPositions:[],
-  playerIsHit:false,
-  playerIsMiss:false,
-}
+  playerGuesses: [],
+  playerPositions: [],
+  playerHitCounter: 0,
+  playerIsHit: false,
+  playerIsMiss: false,
+};
 const computer = {
-  computerGuesses:[],
-  computerPositions:[],
-  computerIsHit:false,
-  computerisMiss:false,
-}
-// const playerShips = {
-//   carrier: [],
-//   battleship: [],
-//   submarine: [],
-//   cruiser: [],
-//   destroyer: [],
-// };
-// const computerShips = {
-//   carrier: [],
-//   battleship: [],
-//   submarine: [],
-//   cruiser: [],
-//   destroyer: [],
-// };
-let computerPositions = [];
+  computerGuesses: [],
+  computerPositions: [],
+  rowIndex: 0,
+  cellIndex: 0,
+  computerIsHit: false,
+  computerisMiss: false,
+};
+
 /*----- cached element references -----*/
 let playerGridEl = document.getElementById("playerGrid");
 let computerGridEl = document.getElementById("computerGrid");
@@ -54,18 +43,39 @@ computerGridEl.addEventListener("click", function (e) {
 function init() {
   gridInitalize();
   computerPosInit();
+  playerPosInit();
   gridElInitialize();
+  turn = "player";
   render();
 }
-function playGame(){
-  playerHitCheck(cellIndex, rowIndex);
+function playGame() {
+  if (turn === "player") {
+    playerHitCheck(cellIndex, rowIndex);
+  } else if (turn === "computer") {
+    computerHitCheck();
+  }
   render();
+  turn = turn === "player" ? "computer" : "player";
 }
 function render() {
-  if(player.playerIsHit === true){
-    computerGridEl.rows[rowIndex].cells[cellIndex].style.backgroundColor = "green";
-  }else if(player.playerIsMiss === true){
-    computerGridEl.rows[rowIndex].cells[cellIndex].style.backgroundColor = "red";
+  if (player.playerIsHit === true) {
+    computerGridEl.rows[rowIndex].cells[cellIndex].style.backgroundColor =
+      "green";
+  } else if (player.playerIsMiss === true) {
+    computerGridEl.rows[rowIndex].cells[cellIndex].style.backgroundColor =
+      "red";
+  }
+  if (computer.computerIsHit === true) {
+    playerGridEl.rows[computer.rowIndex + 1].cells[
+      computer.cellIndex + 1
+    ].style.backroundColor = "green";
+  } else if (computer.computerisMiss === true) {
+    playerGridEl.rows[computer.rowIndex + 1].cells[
+      computer.cellIndex + 1
+    ].style.backroundColor = "red";
+  }
+  if (player.playerHitCounter === 17) {
+    alert("You win!");
   }
 }
 
@@ -91,24 +101,79 @@ function computerPosInit() {
   }
 }
 
+//Function to try and test out player without setting variables atm.
+function playerPosInit() {
+  for (const [key, value] of Object.entries(ships)) {
+    console.log(`${key}: ${value}`);
+    //Random values for computer X and Y coordinates
+    let randX = rand();
+    let randY = rand();
+    //For loop to draw the computer's ship position on the grid.
+    for (let i = 0; i < value; i++) {
+      if (10 - randX <= value) {
+        //computerShips[key].push([randX - i, randY]);
+        player.playerPositions.push([randX - i, randY]);
+        playerGrid[randX - i][randY] = 1;
+      } else if (10 - randX > value) {
+        //computerShips[key].push([randX + i, randY]);
+        player.playerPositions.push([randX + i, randY]);
+        playerGrid[randX + i][randY] = 1;
+      }
+    }
+  }
+}
+
 function rand() {
   return Math.floor(Math.random() * 10);
 }
-
 function playerHitCheck(cellIdx, rowIdx) {
   let compareArray = [];
   compareArray.push([rowIdx - 1, cellIdx - 1]);
-  console.log(compareArray);
+  //console.log(compareArray);
   //Passes compareArray with position 0 since there's only 1 element.
-  console.log(findCoord(computer.computerPositions, compareArray[0]));
-  if (findCoord(computer.computerPositions, compareArray[0])) {
-    console.log("Hit");
-    player.playerIsHit = true;
-    player.playerIsMiss = false;
-  }else{
-    player.playerIsMiss =  true;
-    player.playerIsHit = false;
+  if (!findCoord(player.playerGuesses, compareArray[0])) {
+    if (findCoord(computer.computerPositions, compareArray[0])) {
+      computerGrid[rowIdx - 1][cellIdx - 1] = 2;
+      player.playerHitCounter += 1;
+      player.playerGuesses.push([rowIdx - 1, cellIdx - 1]);
+      player.playerIsHit = true;
+      player.playerIsMiss = false;
+    } else {
+      computerGrid[rowIdx - 1][cellIdx - 1] = -1;
+      player.playerGuesses.push([rowIdx - 1, cellIdx - 1]);
+      player.playerIsMiss = true;
+      player.playerIsHit = false;
+    }
   }
+}
+function computerHitCheck() {
+  let compX = rand();
+  let compY = rand();
+  let compareArray = [];
+  compareArray.push([compX, compY]);
+  // while (findCoord(computer.computerGuesses, compareArray[0])) {
+  //   compX = rand();
+  //   compY = rand();
+  //   compareArray.pop();
+  //   compareArray.push([compX, compY]);
+  // }
+  //alert("entered!");
+  if (findCoord(player.playerPositions, compareArray[0])) {
+    computer.rowIndex = compX;
+    computer.cellIndex = compY;
+    computer.computerGuesses.push([compX, compY]);
+    computer.computerIsHit = true;
+    computer.computerisMiss = false;
+    playerGrid[compX][compY] = 2;
+  } else {
+    computer.rowIndex = compX;
+    computer.cellIndex = compY;
+    playerGrid[compX][compY] = -1;
+    computer.computerGuesses.push([compX, compY]);
+    computer.computerIsMiss = true;
+    computer.computerIsHit = false;
+  }
+  playGame();
 }
 function findCoord(arr, coord) {
   for (let i = 0; i < arr.length; i++) {
@@ -118,7 +183,7 @@ function findCoord(arr, coord) {
   }
   return false;
 }
-//Grid Initialization functions
+//********************* Grid Initialize Functions****************************** */
 function gridInitalize() {
   playerGrid = [];
   computerGrid = [];

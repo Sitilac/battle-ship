@@ -8,16 +8,16 @@ table {
     border-collapse: collapse;;
     color: white;
     text-align: center;
-  }
+}
   
-  table, th, td {
+table, th, td {
     border: 2px solid white;
-  }
+}
 
-  th,td{
-      width: 30px;
-      height: 30px;
-  }
+th,td{
+    width: 30px;
+    height: 30px;
+}
 
 div{
     height: 10px;
