@@ -91,10 +91,11 @@ function computerPosInit() {
     //Random values for computer X and Y coordinates
     let randX = rand();
     let randY = rand();
-    //let flag = randX > 5 ? "x" : "y";
-    let flag = "x";
-    console.log(checkDuplicate(randX, randY, flag, value));
-
+    let flag = randX > 5 ? "x" : "y";
+    while(checkDuplicate(randX, randY, flag, value)){
+      randX = rand();
+      randY = rand();
+    }
     //For loop to draw the computer's ship position on the grid.
     if (flag === "x") {
       for (let i = 0; i < value; i++) {
@@ -104,6 +105,16 @@ function computerPosInit() {
         } else if (10 - randX > value) {
           computer.computerPositions.push([randX + i, randY]);
           computerGrid[randX + i][randY] = 1;
+        }
+      }
+    }else if(flag === "y"){
+      for (let i = 0; i < value; i++) {
+        if (10 - randY <= value) {
+          computer.computerPositions.push([randX, randY - i]);
+          computerGrid[randX][randY - i] = 1;
+        } else if (10 - randY > value) {
+          computer.computerPositions.push([randX, randY + i]);
+          computerGrid[randX][randY + i] = 1;
         }
       }
     }
@@ -121,8 +132,6 @@ function checkDuplicate(randNumX, randNumY, flag, value) {
           return true;
         }
         checkArray[0] =  [randNumX - i, randNumY];
-        console.log(randNumX - i, randNumY)
-        console.log(checkArray[0]);
       }
     }
     if (10 - randNumX > value) {
@@ -130,7 +139,6 @@ function checkDuplicate(randNumX, randNumY, flag, value) {
         if (findCoord(computer.computerPositions, checkArray)) {
           return true;
         }
-        console.log(checkArray);
         checkArray[0] =  [randNumX + i, randNumY];
       }
     }
