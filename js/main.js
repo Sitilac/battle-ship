@@ -27,16 +27,17 @@ const computer = {
   computerIsHit: false,
   computerIsMiss: false,
 };
+let cellIndex;
+let rowIndex;
+let prevRowIndex;
+let prevCellIndex;
+let shipsUsed;
+let shipClass;
 
 /*----- cached element references -----*/
 const playerGridEl = document.getElementById("playerGrid");
 const computerGridEl = document.getElementById("computerGrid");
-let cellIndex;
-let rowIndex;
-let mousePosX;
-let mousePosY;
-let shipsUsed;
-let shipClass;
+
 /*----- event listeners -----*/
 computerGridEl.addEventListener("click", function (e) {
   cellIndex = e.target.cellIndex;
@@ -96,6 +97,9 @@ function render() {
         computer.cellIndex + 1
       ].bgColor = "red";
     }
+  }
+  if(turn !== "initialize"){
+    document.getElementById("shipsContainer").display = "none";
   }
   if (player.playerHitCounter === 17) {
     alert("You win!");
@@ -200,7 +204,7 @@ function computerHitCheck() {
     computer.computerGuesses.push([compX, compY]);
     computer.computerIsHit = true;
     computer.computerIsMiss = false;
-    computer.computerHitCounter ++;
+    computer.computerHitCounter++;
     playerGrid[compX][compY] = 2;
   } else {
     computer.rowIndex = compX;
@@ -215,40 +219,35 @@ function computerHitCheck() {
 }
 
 /*-----------------Player Functions ------------------- */
-//Function to try and test out player without setting variables atm.
-// function playerPosInit() {
-//   for (const [key, value] of Object.entries(ships)) {
-//     console.log(`${key}: ${value}`);
-//     //Random values for computer X and Y coordinates
-//     let randX = rand();
-//     let randY = rand();
-//     //For loop to draw the computer's ship position on the grid.
-//     for (let i = 0; i < value; i++) {
-//       if (10 - randX <= value) {
-//         //computerShips[key].push([randX - i, randY]);
-//         player.playerPositions.push([randX - i, randY]);
-//         playerGrid[randX - i][randY] = 1;
-//       } else if (10 - randX > value) {
-//         //computerShips[key].push([randX + i, randY]);
-//         player.playerPositions.push([randX + i, randY]);
-//         playerGrid[randX + i][randY] = 1;
-//       }
-//     }
-//   }
-// }
-
 function playerChoose(e) {
   cellIndex = e.target.cellIndex;
   rowIndex = e.target.parentElement.rowIndex;
   if (!shipsUsed.includes(shipClass)) {
     shipSize = ships[shipClass];
     shipsUsed.push(shipClass);
+    prevCellIndex = undefined;
+    prevRowIndex = undefined;
   }
   if (shipSize > 0) {
-    player.playerPositions.push([rowIndex - 1, cellIndex - 1]);
-    console.log("entered");
-    shipSize--;
-    render();
+    if (prevCellIndex === undefined) {
+      player.playerPositions.push([rowIndex - 1, cellIndex - 1]);
+      prevRowIndex = rowIndex;
+      prevCellIndex = cellIndex;
+      shipSize--;
+      render();
+    } else if (
+      (rowIndex === prevRowIndex + 1 || rowIndex === prevRowIndex - 1) ||
+      (cellIndex === prevCellIndex + 1 || cellIndex === prevCellIndex - 1)
+    ) {
+      player.playerPositions.push([rowIndex - 1, cellIndex - 1]);
+      prevRowIndex = rowIndex;
+      prevCellIndex = cellIndex;
+      shipSize--;
+      render();
+    }
+  }
+  if(shipsUsed.length === 5 && shipSize === 0){
+    turn = "player";
   }
 }
 
