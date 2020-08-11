@@ -6,6 +6,14 @@ const ships = {
   cruiser: 3,
   destroyer: 2,
 };
+
+const shipsValue = {
+  carrier: 0,
+  battleship: 1,
+  submarine: 2,
+  cruiser: 3,
+  destroyer: 4,
+};
 const letterArray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 /*----- app's state (variables) -----*/
 let turn;
@@ -37,6 +45,7 @@ let shipClass;
 /*----- cached element references -----*/
 const playerGridEl = document.getElementById("playerGrid");
 const computerGridEl = document.getElementById("computerGrid");
+const shipEl = document.querySelectorAll(".ships");
 
 /*----- event listeners -----*/
 computerGridEl.addEventListener("click", function (e) {
@@ -221,6 +230,10 @@ function playerChoose(e) {
     shipsUsed.push(shipClass);
     prevCellIndex = undefined;
     prevRowIndex = undefined;
+  }
+  if (shipsUsed.includes(shipClass)) {
+    let position = shipsValue[shipClass];
+    shipEl[position].style.visibility = "hidden";
   }
   if (rowIndex !== 0 && cellIndex !== 0) {
     if (shipSize > 0) {
