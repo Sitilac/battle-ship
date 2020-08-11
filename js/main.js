@@ -43,7 +43,6 @@ computerGridEl.addEventListener("click", function (e) {
   cellIndex = e.target.cellIndex;
   rowIndex = e.target.parentElement.rowIndex;
   playGame();
-  //playerHitCheck(cellIndex, rowIndex);
 });
 playerGridEl.addEventListener("click", playerChoose);
 document.querySelectorAll(".ships").forEach((ship) => {
@@ -56,6 +55,8 @@ document.querySelectorAll(".ships").forEach((ship) => {
 //playerGridEl.addEventListener('mouseover', highlightOver)
 /*----- functions -----*/
 function init() {
+  playerGridEl.innerHTML = "";
+  computerGridEl.innerHTML = "";
   gridInitalize();
   computerPosInit();
   //playerPosInit();
@@ -63,17 +64,11 @@ function init() {
   turn = "initalize";
   shipsUsed = [];
   shipSize = 0;
-  //render();
 }
 function playGame() {
-  if (turn === "player") {
-    console.log(turn);
-    playerHitCheck(cellIndex, rowIndex);
-  } else if (turn === "computer") {
-    computerHitCheck();
-  }
+  playerHitCheck(cellIndex, rowIndex);
+  computerHitCheck();
   render();
-  turn = turn === "player" ? "computer" : "player";
 }
 function render() {
   if (turn === "initalize") {
@@ -87,7 +82,7 @@ function render() {
       computerGridEl.rows[rowIndex].cells[cellIndex].style.backgroundColor =
         "red";
     }
-  } else if (turn === "computer") {
+
     if (computer.computerIsHit === true) {
       playerGridEl.rows[computer.rowIndex + 1].cells[
         computer.cellIndex + 1
@@ -98,7 +93,7 @@ function render() {
       ].bgColor = "red";
     }
   }
-  if(turn !== "initialize"){
+  if (turn !== "initialize") {
     document.getElementById("shipsContainer").display = "none";
   }
   if (player.playerHitCounter === 17) {
@@ -215,7 +210,6 @@ function computerHitCheck() {
     computer.computerIsHit = false;
   }
   render();
-  //playGame();
 }
 
 /*-----------------Player Functions ------------------- */
@@ -228,25 +222,29 @@ function playerChoose(e) {
     prevCellIndex = undefined;
     prevRowIndex = undefined;
   }
-  if (shipSize > 0) {
-    if (prevCellIndex === undefined) {
-      player.playerPositions.push([rowIndex - 1, cellIndex - 1]);
-      prevRowIndex = rowIndex;
-      prevCellIndex = cellIndex;
-      shipSize--;
-      render();
-    } else if (
-      (rowIndex === prevRowIndex + 1 || rowIndex === prevRowIndex - 1) ||
-      (cellIndex === prevCellIndex + 1 || cellIndex === prevCellIndex - 1)
-    ) {
-      player.playerPositions.push([rowIndex - 1, cellIndex - 1]);
-      prevRowIndex = rowIndex;
-      prevCellIndex = cellIndex;
-      shipSize--;
-      render();
+  if (rowIndex !== 0 && cellIndex !== 0) {
+    if (shipSize > 0) {
+      if (prevCellIndex === undefined) {
+        player.playerPositions.push([rowIndex - 1, cellIndex - 1]);
+        prevRowIndex = rowIndex;
+        prevCellIndex = cellIndex;
+        shipSize--;
+        render();
+      } else if (
+        rowIndex === prevRowIndex + 1 ||
+        rowIndex === prevRowIndex - 1 ||
+        cellIndex === prevCellIndex + 1 ||
+        cellIndex === prevCellIndex - 1
+      ) {
+        player.playerPositions.push([rowIndex - 1, cellIndex - 1]);
+        prevRowIndex = rowIndex;
+        prevCellIndex = cellIndex;
+        shipSize--;
+        render();
+      }
     }
   }
-  if(shipsUsed.length === 5 && shipSize === 0){
+  if (shipsUsed.length === 5 && shipSize === 0) {
     turn = "player";
   }
 }
