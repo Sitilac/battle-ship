@@ -88,12 +88,12 @@ function render() {
     }
   } else if (turn === "computer") {
     if (computer.computerIsHit === true) {
-      playerGridEl.rows[computer.rowIndex].cells[
-        computer.cellIndex
+      playerGridEl.rows[computer.rowIndex + 1].cells[
+        computer.cellIndex + 1
       ].bgColor = "green";
     } else if (computer.computerIsMiss === true) {
-      playerGridEl.rows[computer.rowIndex].cells[
-        computer.cellIndex
+      playerGridEl.rows[computer.rowIndex + 1].cells[
+        computer.cellIndex + 1
       ].bgColor = "red";
     }
   }
@@ -245,7 +245,7 @@ function playerChoose(e) {
     shipsUsed.push(shipClass);
   }
   if (shipSize > 0) {
-    player.playerPositions.push([rowIndex, cellIndex]);
+    player.playerPositions.push([rowIndex - 1, cellIndex - 1]);
     console.log("entered");
     shipSize--;
     render();
