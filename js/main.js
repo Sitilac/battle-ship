@@ -23,15 +23,20 @@ const computer = {
   computerPositions: [],
   rowIndex: 0,
   cellIndex: 0,
+  computerHitCounter: 0,
   computerIsHit: false,
   computerIsMiss: false,
 };
 
 /*----- cached element references -----*/
-let playerGridEl = document.getElementById("playerGrid");
-let computerGridEl = document.getElementById("computerGrid");
+const playerGridEl = document.getElementById("playerGrid");
+const computerGridEl = document.getElementById("computerGrid");
 let cellIndex;
 let rowIndex;
+let mousePosX;
+let mousePosY;
+let shipsUsed;
+let shipClass;
 /*----- event listeners -----*/
 computerGridEl.addEventListener("click", function (e) {
   cellIndex = e.target.cellIndex;
@@ -39,14 +44,25 @@ computerGridEl.addEventListener("click", function (e) {
   playGame();
   //playerHitCheck(cellIndex, rowIndex);
 });
+playerGridEl.addEventListener("click", playerChoose);
+document.querySelectorAll(".ships").forEach((ship) => {
+  ship.addEventListener("click", function (e) {
+    //console.log(e.target.className);
+    shipClass = e.target.className;
+  });
+});
+
+//playerGridEl.addEventListener('mouseover', highlightOver)
 /*----- functions -----*/
 function init() {
   gridInitalize();
   computerPosInit();
-  playerPosInit();
+  //playerPosInit();
   gridElInitialize();
-  turn = "player";
-  render();
+  turn = "initalize";
+  shipsUsed = [];
+  shipSize = 0;
+  //render();
 }
 function playGame() {
   if (turn === "player") {
@@ -59,6 +75,9 @@ function playGame() {
   turn = turn === "player" ? "computer" : "player";
 }
 function render() {
+  if (turn === "initalize") {
+    playerGridEl.rows[rowIndex].cells[cellIndex].bgColor = "blue";
+  }
   if (turn === "player") {
     if (player.playerIsHit === true) {
       computerGridEl.rows[rowIndex].cells[cellIndex].style.backgroundColor =
@@ -69,21 +88,20 @@ function render() {
     }
   } else if (turn === "computer") {
     if (computer.computerIsHit === true) {
-      playerGridEl.rows[computer.rowIndex + 1].cells[
-        computer.cellIndex + 1
+      playerGridEl.rows[computer.rowIndex].cells[
+        computer.cellIndex
       ].bgColor = "green";
     } else if (computer.computerIsMiss === true) {
-      playerGridEl.rows[computer.rowIndex + 1].cells[
-        computer.cellIndex + 1
+      playerGridEl.rows[computer.rowIndex].cells[
+        computer.cellIndex
       ].bgColor = "red";
     }
   }
-
   if (player.playerHitCounter === 17) {
     alert("You win!");
   }
 }
-
+/*---------------Computer functions -------------------------*/
 function computerPosInit() {
   //const entries = Object.entries(ships);
   for (const [key, value] of Object.entries(ships)) {
@@ -92,7 +110,7 @@ function computerPosInit() {
     let randX = rand();
     let randY = rand();
     let flag = randX > 5 ? "x" : "y";
-    while(checkDuplicate(randX, randY, flag, value)){
+    while (checkDuplicate(randX, randY, flag, value)) {
       randX = rand();
       randY = rand();
     }
@@ -107,7 +125,7 @@ function computerPosInit() {
           computerGrid[randX + i][randY] = 1;
         }
       }
-    }else if(flag === "y"){
+    } else if (flag === "y") {
       for (let i = 0; i < value; i++) {
         if (10 - randY <= value) {
           computer.computerPositions.push([randX, randY - i]);
@@ -131,7 +149,7 @@ function checkDuplicate(randNumX, randNumY, flag, value) {
         if (findCoord(computer.computerPositions, checkArray[0])) {
           return true;
         }
-        checkArray[0] =  [randNumX - i, randNumY];
+        checkArray[0] = [randNumX - i, randNumY];
       }
     }
     if (10 - randNumX > value) {
@@ -139,7 +157,7 @@ function checkDuplicate(randNumX, randNumY, flag, value) {
         if (findCoord(computer.computerPositions, checkArray)) {
           return true;
         }
-        checkArray[0] =  [randNumX + i, randNumY];
+        checkArray[0] = [randNumX + i, randNumY];
       }
     }
     return false;
@@ -165,32 +183,75 @@ function checkDuplicate(randNumX, randNumY, flag, value) {
     return false;
   }
 }
+function computerHitCheck() {
+  let compX = rand();
+  let compY = rand();
+  let compareArray = [];
+  compareArray.push([compX, compY]);
+  while (findCoord(computer.computerGuesses, compareArray[0])) {
+    compX = rand();
+    compY = rand();
+    compareArray.pop();
+    compareArray.push([compX, compY]);
+  }
+  if (findCoord(player.playerPositions, compareArray[0])) {
+    computer.rowIndex = compX;
+    computer.cellIndex = compY;
+    computer.computerGuesses.push([compX, compY]);
+    computer.computerIsHit = true;
+    computer.computerIsMiss = false;
+    computer.computerHitCounter ++;
+    playerGrid[compX][compY] = 2;
+  } else {
+    computer.rowIndex = compX;
+    computer.cellIndex = compY;
+    playerGrid[compX][compY] = -1;
+    computer.computerGuesses.push([compX, compY]);
+    computer.computerIsMiss = true;
+    computer.computerIsHit = false;
+  }
+  render();
+  //playGame();
+}
 
+/*-----------------Player Functions ------------------- */
 //Function to try and test out player without setting variables atm.
-function playerPosInit() {
-  for (const [key, value] of Object.entries(ships)) {
-    console.log(`${key}: ${value}`);
-    //Random values for computer X and Y coordinates
-    let randX = rand();
-    let randY = rand();
-    //For loop to draw the computer's ship position on the grid.
-    for (let i = 0; i < value; i++) {
-      if (10 - randX <= value) {
-        //computerShips[key].push([randX - i, randY]);
-        player.playerPositions.push([randX - i, randY]);
-        playerGrid[randX - i][randY] = 1;
-      } else if (10 - randX > value) {
-        //computerShips[key].push([randX + i, randY]);
-        player.playerPositions.push([randX + i, randY]);
-        playerGrid[randX + i][randY] = 1;
-      }
-    }
+// function playerPosInit() {
+//   for (const [key, value] of Object.entries(ships)) {
+//     console.log(`${key}: ${value}`);
+//     //Random values for computer X and Y coordinates
+//     let randX = rand();
+//     let randY = rand();
+//     //For loop to draw the computer's ship position on the grid.
+//     for (let i = 0; i < value; i++) {
+//       if (10 - randX <= value) {
+//         //computerShips[key].push([randX - i, randY]);
+//         player.playerPositions.push([randX - i, randY]);
+//         playerGrid[randX - i][randY] = 1;
+//       } else if (10 - randX > value) {
+//         //computerShips[key].push([randX + i, randY]);
+//         player.playerPositions.push([randX + i, randY]);
+//         playerGrid[randX + i][randY] = 1;
+//       }
+//     }
+//   }
+// }
+
+function playerChoose(e) {
+  cellIndex = e.target.cellIndex;
+  rowIndex = e.target.parentElement.rowIndex;
+  if (!shipsUsed.includes(shipClass)) {
+    shipSize = ships[shipClass];
+    shipsUsed.push(shipClass);
+  }
+  if (shipSize > 0) {
+    player.playerPositions.push([rowIndex, cellIndex]);
+    console.log("entered");
+    shipSize--;
+    render();
   }
 }
 
-function rand() {
-  return Math.floor(Math.random() * 10);
-}
 function playerHitCheck(cellIdx, rowIdx) {
   let compareArray = [];
   compareArray.push([rowIdx - 1, cellIdx - 1]);
@@ -211,35 +272,7 @@ function playerHitCheck(cellIdx, rowIdx) {
     }
   }
 }
-function computerHitCheck() {
-  let compX = rand();
-  let compY = rand();
-  let compareArray = [];
-  compareArray.push([compX, compY]);
-  while (findCoord(computer.computerGuesses, compareArray[0])) {
-    compX = rand();
-    compY = rand();
-    compareArray.pop();
-    compareArray.push([compX, compY]);
-  }
-  if (findCoord(player.playerPositions, compareArray[0])) {
-    computer.rowIndex = compX;
-    computer.cellIndex = compY;
-    computer.computerGuesses.push([compX, compY]);
-    computer.computerIsHit = true;
-    computer.computerIsMiss = false;
-    playerGrid[compX][compY] = 2;
-  } else {
-    computer.rowIndex = compX;
-    computer.cellIndex = compY;
-    playerGrid[compX][compY] = -1;
-    computer.computerGuesses.push([compX, compY]);
-    computer.computerIsMiss = true;
-    computer.computerIsHit = false;
-  }
-  render();
-  //playGame();
-}
+/*----------------Helper Functions ----------------- */
 function findCoord(arr, coord) {
   for (let i = 0; i < arr.length; i++) {
     if (arr[i][0] === coord[0] && arr[i][1] === coord[1]) {
@@ -248,14 +281,10 @@ function findCoord(arr, coord) {
   }
   return false;
 }
-function findCoordArr(arr, arr2) {
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i][0] === arr2[i][0] && arr[i][1] === arr2[i][1]) {
-      return true;
-    }
-  }
-  return false;
+function rand() {
+  return Math.floor(Math.random() * 10);
 }
+
 //********************* Grid Initialize Functions****************************** */
 function gridInitalize() {
   playerGrid = [];
@@ -287,16 +316,16 @@ function gridLetterInit() {
     computerGridEl.rows[i].cells[0].innerText = letterArray[i - 1];
     computerGridEl.rows[0].cells[i].innerText = `${i}`;
   }
-  //gridIdInit();
+  gridIdInit();
 }
-// function gridIdInit() {
-//   for (let i = 1; i < 11; i++) {
-//     for (let j = 1; j < 11; j++) {
-//       playerGridEl.rows[i].cells[j].id = `[${i - 1}, ${j - 1}]`;
-//       computerGridEl.rows[i].cells[j].id = `[${i - 1}, ${j - 1}]`;
-//     }
-//   }
-// }
+function gridIdInit() {
+  for (let i = 1; i < 11; i++) {
+    for (let j = 1; j < 11; j++) {
+      playerGridEl.rows[i].cells[j].id = `[${i - 1}, ${j - 1}]`;
+      computerGridEl.rows[i].cells[j].id = `[${i - 1}, ${j - 1}]`;
+    }
+  }
+}
 
 init();
 

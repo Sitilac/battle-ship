@@ -1,8 +1,8 @@
 body{
-    display: flex; align-items: center;
+    display: flex ; align-items: center;
     justify-content: center;
-    flex-direction: column;
     background-color: black;
+    flex-direction: column;
 }
 table {
     border-collapse: collapse;;
@@ -19,12 +19,6 @@ th,td{
     height: 30px;
 }
 
-div{
-    height: 10px;
-}
-.ships{
-    background-color: grey;
-}
 
 #shipsContainer{
     margin-top:10px;
@@ -33,6 +27,9 @@ div{
 }
 #submarine{
     grid-column: span 1;
+}
+td + td:hover{
+    background-color: blue;
 }
 
 h3{
