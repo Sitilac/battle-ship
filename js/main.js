@@ -6,13 +6,32 @@ const ships = {
   cruiser: 3,
   destroyer: 2,
 };
-
 const shipsValue = {
-  carrier: 0,
-  battleship: 1,
-  submarine: 2,
-  cruiser: 3,
-  destroyer: 4,
+  carrier: {
+    value: 0,
+    validMovesVertical: [],
+    validMovesHorizontal: [],
+  },
+  battleship: {
+    value: 1,
+    validMovesVertical: [],
+    validMovesHorizontal: [],
+  },
+  submarine: {
+    value: 2,
+    validMovesVertical: [],
+    validMovesHorizontal: [],
+  },
+  cruiser: {
+    value: 3,
+    validMovesVertical: [],
+    validMovesHorizontal: [],
+  },
+  destroyer: {
+    value: 4,
+    validMovesVertical: [],
+    validMovesHorizontal: [],
+  },
 };
 const letterArray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 /*----- app's state (variables) -----*/
@@ -56,7 +75,6 @@ computerGridEl.addEventListener("click", function (e) {
 playerGridEl.addEventListener("click", playerChoose);
 document.querySelectorAll(".ships").forEach((ship) => {
   ship.addEventListener("click", function (e) {
-    //console.log(e.target.className);
     shipClass = e.target.className;
   });
 });
@@ -71,6 +89,7 @@ function init() {
   //playerPosInit();
   gridElInitialize();
   turn = "initalize";
+  shipClass = "";
   shipsUsed = [];
   shipSize = 0;
 }
@@ -82,6 +101,10 @@ function playGame() {
 function render() {
   if (turn === "initalize") {
     playerGridEl.rows[rowIndex].cells[cellIndex].bgColor = "blue";
+    if (shipsUsed.includes(shipClass)) {
+      let position = shipsValue[shipClass].value;
+      shipEl[position].style.visibility = "hidden";
+    }
   }
   if (turn === "player") {
     if (player.playerIsHit === true) {
@@ -113,7 +136,6 @@ function render() {
 function computerPosInit() {
   //const entries = Object.entries(ships);
   for (const [key, value] of Object.entries(ships)) {
-    console.log(`${key}: ${value}`);
     //Random values for computer X and Y coordinates
     let randX = rand();
     let randY = rand();
@@ -150,46 +172,47 @@ function computerPosInit() {
 function checkDuplicate(randNumX, randNumY, flag, value) {
   let checkArray = [];
   checkArray.push([randNumX, randNumY]);
-
   if (flag === "x") {
     if (10 - randNumX <= value) {
-      for (let i = 0; i < value; i++) {
+      for (let i = 1; i <= value; i++) {
         if (findCoord(computer.computerPositions, checkArray[0])) {
           return true;
         }
         checkArray[0] = [randNumX - i, randNumY];
+        console.log(`Check1:${checkArray[0]}`);
       }
     }
     if (10 - randNumX > value) {
-      for (let i = 0; i < value; i++) {
-        if (findCoord(computer.computerPositions, checkArray)) {
+      for (let i = 1; i <= value; i++) {
+        if (findCoord(computer.computerPositions, checkArray[0])) {
           return true;
         }
         checkArray[0] = [randNumX + i, randNumY];
+        console.log(`Check2:${checkArray[0]}`);
       }
     }
     return false;
   } else if (flag === "y") {
     if (10 - randNumY <= value) {
-      for (let i = 0; i < value; i++) {
-        if (findCoord(computer.computerPositions, checkArray)) {
+      for (let i = 1; i <= value; i++) {
+        if (findCoord(computer.computerPositions, checkArray[0])) {
           return true;
         }
-        checkArray.pop();
-        checkArray.push([randNumX, randNumY - i]);
-      }
-      if (10 - randNumY > value) {
-        for (let i = 0; i < value; i++) {
-          if (findCoord(computer.computerPositions, checkArray)) {
-            return true;
-          }
-          checkArray.pop();
-          checkArray.push([randNumX, randNumY + i]);
-        }
+        checkArray[0] = [randNumX, randNumY - i];
+        console.log(`Check3:${checkArray[0]}`);
       }
     }
-    return false;
+    if (10 - randNumY > value) {
+      for (let i = 1; i <= value; i++) {
+        if (findCoord(computer.computerPositions, checkArray[0])) {
+          return true;
+        }
+        console.log(`Check4:${checkArray[0]}`);
+        checkArray[0] = [randNumX, randNumY + i];
+      }
+    }
   }
+  return false;
 }
 function computerHitCheck() {
   let compX = rand();
@@ -223,17 +246,17 @@ function computerHitCheck() {
 
 /*-----------------Player Functions ------------------- */
 function playerChoose(e) {
+  if (shipClass === "") {
+    return;
+  }
   cellIndex = e.target.cellIndex;
   rowIndex = e.target.parentElement.rowIndex;
-  if (!shipsUsed.includes(shipClass)) {
+  if (!shipsUsed.includes(shipClass) && shipSize === 0) {
     shipSize = ships[shipClass];
     shipsUsed.push(shipClass);
+    populateShipMoves();
     prevCellIndex = undefined;
     prevRowIndex = undefined;
-  }
-  if (shipsUsed.includes(shipClass)) {
-    let position = shipsValue[shipClass];
-    shipEl[position].style.visibility = "hidden";
   }
   if (rowIndex !== 0 && cellIndex !== 0) {
     if (shipSize > 0) {
@@ -249,11 +272,13 @@ function playerChoose(e) {
         cellIndex === prevCellIndex + 1 ||
         cellIndex === prevCellIndex - 1
       ) {
-        player.playerPositions.push([rowIndex - 1, cellIndex - 1]);
-        prevRowIndex = rowIndex;
-        prevCellIndex = cellIndex;
-        shipSize--;
-        render();
+        if (validMoves()) {
+          player.playerPositions.push([rowIndex - 1, cellIndex - 1]);
+          prevRowIndex = rowIndex;
+          prevCellIndex = cellIndex;
+          shipSize--;
+          render();
+        }
       }
     }
   }
@@ -261,11 +286,27 @@ function playerChoose(e) {
     turn = "player";
   }
 }
+function populateShipMoves() {
+  for (i = 0; i < ships[shipClass]; i++) {
+    shipsValue[shipClass].validMovesVertical.push([rowIndex + i, cellIndex]);
+    shipsValue[shipClass].validMovesVertical.push([rowIndex - i, cellIndex]);
+    shipsValue[shipClass].validMovesHorizontal.push([rowIndex, cellIndex + i]);
+    shipsValue[shipClass].validMovesHorizontal.push([rowIndex, cellIndex - i]);
+  }
+}
+function validMoves() {
+  let compareArray = [rowIndex, cellIndex];
+  if (findCoord(shipsValue[shipClass].validMovesHorizontal, compareArray))
+    return true;
+  if (findCoord(shipsValue[shipClass].validMovesVertical, compareArray))
+    return true;
+  else return false;
+}
 
 function playerHitCheck(cellIdx, rowIdx) {
   let compareArray = [];
   compareArray.push([rowIdx - 1, cellIdx - 1]);
-  //console.log(compareArray);
+
   //Passes compareArray with position 0 since there's only 1 element.
   if (!findCoord(player.playerGuesses, compareArray[0])) {
     if (findCoord(computer.computerPositions, compareArray[0])) {
