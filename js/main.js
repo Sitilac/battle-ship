@@ -169,6 +169,7 @@ function computerPosInit() {
   }
 }
 
+//Function used to check for duplicates when randomly populating the computer grid.
 function checkDuplicate(randNumX, randNumY, flag, value) {
   let checkArray = [];
   checkArray.push([randNumX, randNumY]);
@@ -214,6 +215,7 @@ function checkDuplicate(randNumX, randNumY, flag, value) {
   }
   return false;
 }
+//Basic computer AI
 function computerHitCheck() {
   let compX = rand();
   let compY = rand();
@@ -286,6 +288,7 @@ function playerChoose(e) {
     turn = "player";
   }
 }
+//When the first point of the ship is set push valid moves towards each ship.
 function populateShipMoves() {
   for (i = 0; i < ships[shipClass]; i++) {
     shipsValue[shipClass].validMovesVertical.push([rowIndex + i, cellIndex]);
@@ -294,6 +297,7 @@ function populateShipMoves() {
     shipsValue[shipClass].validMovesHorizontal.push([rowIndex, cellIndex - i]);
   }
 }
+//Checks each ship to make sure squares are being placed properly
 function validMoves() {
   let compareArray = [rowIndex, cellIndex];
   if (findCoord(shipsValue[shipClass].validMovesHorizontal, compareArray))
