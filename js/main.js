@@ -79,7 +79,7 @@ resetEl.addEventListener("click", playAgain);
 playerGridEl.addEventListener("click", playerChoose);
 document.querySelectorAll(".ships").forEach((ship) => {
   ship.addEventListener("click", function (e) {
-    shipClass = e.target.className;
+    if (shipSize === 0) shipClass = e.target.className;
   });
 });
 
@@ -92,10 +92,10 @@ function init() {
   computerPosInit();
   gridElInitialize();
   shipVisible();
-  titleEl.innerHTML = "B<br>A<br>T<br>T<br>L<br>E<br>S<br>H<br>I<br>P"
-  shipContainerEl.style.display = "inline-grid"
+  titleEl.innerHTML = "B<br>A<br>T<br>T<br>L<br>E<br>S<br>H<br>I<br>P";
+  shipContainerEl.style.display = "inline-grid";
   computerGridEl.style.visibility = "hidden";
-  resetEl.style.display="none";
+  resetEl.style.display = "none";
   shipClass = "";
   shipsUsed = [];
   shipSize = 0;
@@ -355,10 +355,10 @@ function renderGameOver() {
     resetEl.style.display = "block";
   }
 }
-function shipVisible(){
-  shipEl.forEach((ship) => ship.style.visibility ="visible");
+function shipVisible() {
+  shipEl.forEach((ship) => (ship.style.visibility = "visible"));
 }
-function playAgain(){
+function playAgain() {
   init();
 }
 //********************* Grid Initialize Functions****************************** */
