@@ -35,7 +35,7 @@ th,td{
     grid-column: span 1;
 }
 td + td:hover{
-    background-color: blue;
+    border-color: chartreuse;
 }
 div table{
     background-image: url("../img/steel.png");
@@ -45,6 +45,7 @@ div table{
 h1{
     color: white;
     margin: 10px;
+    background-color: red;
 }
 .water{
     background-image: url("../img/water.png");

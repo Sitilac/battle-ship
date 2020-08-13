@@ -6,6 +6,34 @@ const ships = {
   cruiser: 3,
   destroyer: 2,
 };
+const letterArray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+/*----- app's state (variables) -----*/
+let turn;
+let computerGrid;
+let playerGrid;
+
+let cellIndex;
+let rowIndex;
+let prevRowIndex;
+let prevCellIndex;
+let shipsUsed;
+let shipClass;
+const player = {
+  playerGuesses: [],
+  playerPositions: [],
+  playerHitCounter: 0,
+  playerIsHit: false,
+  playerIsMiss: false,
+};
+const computer = {
+  computerGuesses: [],
+  computerPositions: [],
+  rowIndex: 0,
+  cellIndex: 0,
+  computerHitCounter: 0,
+  computerIsHit: false,
+  computerIsMiss: false,
+};
 const shipsValue = {
   carrier: {
     value: 0,
@@ -33,33 +61,6 @@ const shipsValue = {
     validMovesHorizontal: [],
   },
 };
-const letterArray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
-/*----- app's state (variables) -----*/
-let turn;
-let computerGrid;
-let playerGrid;
-const player = {
-  playerGuesses: [],
-  playerPositions: [],
-  playerHitCounter: 0,
-  playerIsHit: false,
-  playerIsMiss: false,
-};
-const computer = {
-  computerGuesses: [],
-  computerPositions: [],
-  rowIndex: 0,
-  cellIndex: 0,
-  computerHitCounter: 0,
-  computerIsHit: false,
-  computerIsMiss: false,
-};
-let cellIndex;
-let rowIndex;
-let prevRowIndex;
-let prevCellIndex;
-let shipsUsed;
-let shipClass;
 
 /*----- cached element references -----*/
 const playerGridEl = document.getElementById("playerGrid");
