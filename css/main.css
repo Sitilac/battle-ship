@@ -1,8 +1,9 @@
 body{
-    display: flex ; align-items: center;
+    display: flex; 
+    align-items: center;
     justify-content: center;
     background-color: black;
-    flex-direction: column;
+    font-family: 'Staatliches', cursive;
 }
 table {
     border-collapse: collapse;;
@@ -11,12 +12,18 @@ table {
 }
   
 table, th, td {
-    border: 2px solid white;
+    border: 2px;
+    border-style: groove;
+    border-color: #ffffff;
 }
 
 th,td{
     width: 30px;
     height: 30px;
+}
+
+#computerGrid{
+    visibility: hidden;
 }
 
 #shipsContainer{
@@ -31,10 +38,31 @@ td + td:hover{
     background-color: blue;
 }
 div table{
-    background-color: blue;
+    background-image: url("../img/steel.png");
     margin: 10px;
 }
 
-h3{
+h1{
     color: white;
+    margin: 10px;
+}
+.water{
+    background-image: url("../img/water.png");
+}
+.steel{
+    background-image: url("../img/steel.png");
+}
+.hit{
+    background-image: url("../img/Lava.png");
+}
+.miss{
+    background-image: url("../img/Darktile.png");
+}
+#title{
+    margin: 0;
+    text-align: center;
+}
+#reset{
+    margin-top: 40px;
+    display: none;
 }

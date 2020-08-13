@@ -64,7 +64,10 @@ let shipClass;
 /*----- cached element references -----*/
 const playerGridEl = document.getElementById("playerGrid");
 const computerGridEl = document.getElementById("computerGrid");
+const shipContainerEl = document.getElementById("shipsContainer");
+const resetEl = document.getElementById("reset");
 const shipEl = document.querySelectorAll(".ships");
+const titleEl = document.querySelector("h1");
 
 /*----- event listeners -----*/
 computerGridEl.addEventListener("click", function (e) {
@@ -72,6 +75,7 @@ computerGridEl.addEventListener("click", function (e) {
   rowIndex = e.target.parentElement.rowIndex;
   playGame();
 });
+resetEl.addEventListener("click", playAgain);
 playerGridEl.addEventListener("click", playerChoose);
 document.querySelectorAll(".ships").forEach((ship) => {
   ship.addEventListener("click", function (e) {
@@ -79,16 +83,19 @@ document.querySelectorAll(".ships").forEach((ship) => {
   });
 });
 
-//playerGridEl.addEventListener('mouseover', highlightOver)
 /*----- functions -----*/
 function init() {
   playerGridEl.innerHTML = "";
   computerGridEl.innerHTML = "";
+  turn = "initalize";
   gridInitalize();
   computerPosInit();
-  //playerPosInit();
   gridElInitialize();
-  turn = "initalize";
+  shipVisible();
+  titleEl.innerHTML = "B<br>A<br>T<br>T<br>L<br>E<br>S<br>H<br>I<br>P"
+  shipContainerEl.style.display = "inline-grid"
+  computerGridEl.style.visibility = "hidden";
+  resetEl.style.display="none";
   shipClass = "";
   shipsUsed = [];
   shipSize = 0;
@@ -99,38 +106,9 @@ function playGame() {
   render();
 }
 function render() {
-  if (turn === "initalize") {
-    playerGridEl.rows[rowIndex].cells[cellIndex].bgColor = "blue";
-    if (shipsUsed.includes(shipClass)) {
-      let position = shipsValue[shipClass].value;
-      shipEl[position].style.visibility = "hidden";
-    }
-  }
-  if (turn === "player") {
-    if (player.playerIsHit === true) {
-      computerGridEl.rows[rowIndex].cells[cellIndex].style.backgroundColor =
-        "green";
-    } else if (player.playerIsMiss === true) {
-      computerGridEl.rows[rowIndex].cells[cellIndex].style.backgroundColor =
-        "red";
-    }
-
-    if (computer.computerIsHit === true) {
-      playerGridEl.rows[computer.rowIndex + 1].cells[
-        computer.cellIndex + 1
-      ].bgColor = "green";
-    } else if (computer.computerIsMiss === true) {
-      playerGridEl.rows[computer.rowIndex + 1].cells[
-        computer.cellIndex + 1
-      ].bgColor = "red";
-    }
-  }
-  if (turn !== "initialize") {
-    document.getElementById("shipsContainer").display = "none";
-  }
-  if (player.playerHitCounter === 17) {
-    alert("You win!");
-  }
+  renderBeginning();
+  renderGame();
+  renderGameOver();
 }
 /*---------------Computer functions -------------------------*/
 function computerPosInit() {
@@ -180,7 +158,6 @@ function checkDuplicate(randNumX, randNumY, flag, value) {
           return true;
         }
         checkArray[0] = [randNumX - i, randNumY];
-        console.log(`Check1:${checkArray[0]}`);
       }
     }
     if (10 - randNumX > value) {
@@ -189,7 +166,6 @@ function checkDuplicate(randNumX, randNumY, flag, value) {
           return true;
         }
         checkArray[0] = [randNumX + i, randNumY];
-        console.log(`Check2:${checkArray[0]}`);
       }
     }
     return false;
@@ -200,7 +176,6 @@ function checkDuplicate(randNumX, randNumY, flag, value) {
           return true;
         }
         checkArray[0] = [randNumX, randNumY - i];
-        console.log(`Check3:${checkArray[0]}`);
       }
     }
     if (10 - randNumY > value) {
@@ -208,7 +183,6 @@ function checkDuplicate(randNumX, randNumY, flag, value) {
         if (findCoord(computer.computerPositions, checkArray[0])) {
           return true;
         }
-        console.log(`Check4:${checkArray[0]}`);
         checkArray[0] = [randNumX, randNumY + i];
       }
     }
@@ -310,8 +284,6 @@ function validMoves() {
 function playerHitCheck(cellIdx, rowIdx) {
   let compareArray = [];
   compareArray.push([rowIdx - 1, cellIdx - 1]);
-
-  //Passes compareArray with position 0 since there's only 1 element.
   if (!findCoord(player.playerGuesses, compareArray[0])) {
     if (findCoord(computer.computerPositions, compareArray[0])) {
       computerGrid[rowIdx - 1][cellIdx - 1] = 2;
@@ -339,7 +311,56 @@ function findCoord(arr, coord) {
 function rand() {
   return Math.floor(Math.random() * 10);
 }
+function renderGame() {
+  if (turn === "player") {
+    if (player.playerIsHit === true) {
+      computerGridEl.rows[rowIndex].cells[cellIndex].className = "hit";
+    } else if (player.playerIsMiss === true) {
+      computerGridEl.rows[rowIndex].cells[cellIndex].className = "miss";
+    }
 
+    if (computer.computerIsHit === true) {
+      playerGridEl.rows[computer.rowIndex + 1].cells[
+        computer.cellIndex + 1
+      ].className = "hit";
+    } else if (computer.computerIsMiss === true) {
+      playerGridEl.rows[computer.rowIndex + 1].cells[
+        computer.cellIndex + 1
+      ].className = "miss";
+    }
+  }
+  if (turn !== "initialize") {
+    document.getElementById("shipsContainer").display = "none";
+  }
+}
+function renderBeginning() {
+  if (turn === "initalize") {
+    playerGridEl.rows[rowIndex].cells[cellIndex].className = "steel";
+    if (shipsUsed.includes(shipClass)) {
+      let position = shipsValue[shipClass].value;
+      shipEl[position].style.visibility = "hidden";
+      if (shipsUsed.length === 5 && shipSize === 0) {
+        computerGridEl.style.visibility = "visible";
+        shipContainerEl.style.display = "none";
+      }
+    }
+  }
+}
+function renderGameOver() {
+  if (player.playerHitCounter === 17) {
+    titleEl.innerHTML = "P<br>L<br>A<br>Y<br>E<br>R<br><br>W<br>I<br>N<br>S";
+    resetEl.style.display = "block";
+  } else if (computer.computerHitCounter === 17) {
+    titleEl.innerHTML = "C<br>O<br>M<br>P<br><br>W<br>I<br>N<br>S<br>!<br>!";
+    resetEl.style.display = "block";
+  }
+}
+function shipVisible(){
+  shipEl.forEach((ship) => ship.style.visibility ="visible");
+}
+function playAgain(){
+  init();
+}
 //********************* Grid Initialize Functions****************************** */
 function gridInitalize() {
   playerGrid = [];
@@ -376,8 +397,8 @@ function gridLetterInit() {
 function gridIdInit() {
   for (let i = 1; i < 11; i++) {
     for (let j = 1; j < 11; j++) {
-      playerGridEl.rows[i].cells[j].id = `[${i - 1}, ${j - 1}]`;
-      computerGridEl.rows[i].cells[j].id = `[${i - 1}, ${j - 1}]`;
+      playerGridEl.rows[i].cells[j].className = "water";
+      computerGridEl.rows[i].cells[j].className = "water";
     }
   }
 }
