@@ -223,11 +223,11 @@ function computerHitCheck() {
 
 /*-----------------Player Functions ------------------- */
 function playerChoose(e) {
-  if (shipClass === "") {
-    return;
-  }
+  if (shipClass === "") return;
   cellIndex = e.target.cellIndex;
   rowIndex = e.target.parentElement.rowIndex;
+
+  if(findCoord(player.playerPositions,[rowIndex - 1,cellIndex - 1])) return;
   if (!shipsUsed.includes(shipClass) && shipSize === 0) {
     shipSize = ships[shipClass];
     shipsUsed.push(shipClass);
