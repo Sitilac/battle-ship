@@ -6,6 +6,10 @@
 
 ### HTML, CSS, and Javascript
 
+## <span style="text-decoration: underline">In Game Screenshots</span>
+![Start](https://imgur.com/QKNL7t1)
+![Playing](https://imgur.com/TR7O3n5)
+![Finished](https://imgur.com/Q2QzYPZ)
 ## <span style="text-decoration: underline">Starting the Game</span>
 
 * The game starts out with the player grid and your ships on the right.
@@ -17,4 +21,4 @@
 
 ## <span style="text-decoration: underline">Planned Features</span>
 
-### I plan on adding drag and drop to the ships in order to give maximum control to the player as well as speed up the placing of ships.
+### I plan on adding drag and drop to the ships in order to give maximum control to the player as well as speed up the placing of ships. This will also allow me to use actual ship images as well.
