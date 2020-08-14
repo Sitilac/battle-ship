@@ -11,7 +11,6 @@ const letterArray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 let turn;
 let computerGrid;
 let playerGrid;
-
 let cellIndex;
 let rowIndex;
 let prevRowIndex;
@@ -65,6 +64,7 @@ const shipsValue = {
 /*----- cached element references -----*/
 const playerGridEl = document.getElementById("playerGrid");
 const computerGridEl = document.getElementById("computerGrid");
+const computerGridContainerEl = document.querySelector(".computerGridContainer");
 const shipContainerEl = document.getElementById("shipsContainer");
 const resetEl = document.getElementById("reset");
 const shipEl = document.querySelectorAll(".ships");
@@ -95,7 +95,7 @@ function init() {
   shipVisible();
   titleEl.innerHTML = "B<br>A<br>T<br>T<br>L<br>E<br>S<br>H<br>I<br>P";
   shipContainerEl.style.display = "inline-grid";
-  computerGridEl.style.visibility = "hidden";
+  computerGridContainerEl.style.visibility = "hidden";
   resetEl.style.display = "none";
   shipClass = "";
   shipsUsed = [];
@@ -220,7 +220,6 @@ function computerHitCheck() {
   }
   render();
 }
-
 /*-----------------Player Functions ------------------- */
 function playerChoose(e) {
   if (shipClass === "") return;
@@ -341,7 +340,7 @@ function renderBeginning() {
       let position = shipsValue[shipClass].value;
       shipEl[position].style.visibility = "hidden";
       if (shipsUsed.length === 5 && shipSize === 0) {
-        computerGridEl.style.visibility = "visible";
+        computerGridContainerEl.style.visibility = "visible";
         shipContainerEl.style.display = "none";
       }
     }

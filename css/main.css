@@ -18,11 +18,11 @@ table, th, td {
 }
 
 th,td{
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
 }
 
-#computerGrid{
+.computerGridContainer{
     visibility: hidden;
 }
 
@@ -35,7 +35,7 @@ th,td{
     grid-column: span 1;
 }
 td + td:hover{
-    border-color: chartreuse;
+    border-color: rgb(255, 0, 0);
 }
 div table{
     background-image: url("../img/steel.png");
@@ -45,6 +45,14 @@ div table{
 h1{
     color: white;
     margin: 10px;
+    padding: 15px;
+    background-color: red;
+}
+h2{
+    color: white;
+    text-align: center;
+    margin: 10px;
+    padding: 0px;
     background-color: red;
 }
 .water{
@@ -65,5 +73,9 @@ h1{
 }
 #reset{
     margin-top: 40px;
+    font-weight: bold;
+    padding: 10px;
+    background-color: red;
+    color: white;
     display: none;
 }
