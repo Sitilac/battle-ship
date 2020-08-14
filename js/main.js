@@ -9,8 +9,6 @@ const ships = {
 const letterArray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 /*----- app's state (variables) -----*/
 let turn;
-let computerGrid;
-let playerGrid;
 let cellIndex;
 let rowIndex;
 let prevRowIndex;
@@ -64,7 +62,9 @@ const shipsValue = {
 /*----- cached element references -----*/
 const playerGridEl = document.getElementById("playerGrid");
 const computerGridEl = document.getElementById("computerGrid");
-const computerGridContainerEl = document.querySelector(".computerGridContainer");
+const computerGridContainerEl = document.querySelector(
+  ".computerGridContainer"
+);
 const shipContainerEl = document.getElementById("shipsContainer");
 const resetEl = document.getElementById("reset");
 const shipEl = document.querySelectorAll(".ships");
@@ -209,11 +209,9 @@ function computerHitCheck() {
     computer.computerIsHit = true;
     computer.computerIsMiss = false;
     computer.computerHitCounter++;
-    playerGrid[compX][compY] = 2;
   } else {
     computer.rowIndex = compX;
     computer.cellIndex = compY;
-    playerGrid[compX][compY] = -1;
     computer.computerGuesses.push([compX, compY]);
     computer.computerIsMiss = true;
     computer.computerIsHit = false;
@@ -226,7 +224,7 @@ function playerChoose(e) {
   cellIndex = e.target.cellIndex;
   rowIndex = e.target.parentElement.rowIndex;
 
-  if(findCoord(player.playerPositions,[rowIndex - 1,cellIndex - 1])) return;
+  if (findCoord(player.playerPositions, [rowIndex - 1, cellIndex - 1])) return;
   if (!shipsUsed.includes(shipClass) && shipSize === 0) {
     shipSize = ships[shipClass];
     shipsUsed.push(shipClass);
@@ -286,13 +284,11 @@ function playerHitCheck(cellIdx, rowIdx) {
   compareArray.push([rowIdx - 1, cellIdx - 1]);
   if (!findCoord(player.playerGuesses, compareArray[0])) {
     if (findCoord(computer.computerPositions, compareArray[0])) {
-      computerGrid[rowIdx - 1][cellIdx - 1] = 2;
       player.playerHitCounter += 1;
       player.playerGuesses.push([rowIdx - 1, cellIdx - 1]);
       player.playerIsHit = true;
       player.playerIsMiss = false;
     } else {
-      computerGrid[rowIdx - 1][cellIdx - 1] = -1;
       player.playerGuesses.push([rowIdx - 1, cellIdx - 1]);
       player.playerIsMiss = true;
       player.playerIsHit = false;
@@ -300,6 +296,7 @@ function playerHitCheck(cellIdx, rowIdx) {
   }
 }
 /*----------------Helper Functions ----------------- */
+//
 function findCoord(arr, coord) {
   for (let i = 0; i < arr.length; i++) {
     if (arr[i][0] === coord[0] && arr[i][1] === coord[1]) {

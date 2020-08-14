@@ -68,7 +68,7 @@ h2{
     background-image: url("../img/Darktile.png");
 }
 #title{
-    margin: 0;
+    margin: 1;
     text-align: center;
 }
 #reset{
