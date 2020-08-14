@@ -71,11 +71,7 @@ const shipEl = document.querySelectorAll(".ships");
 const titleEl = document.querySelector("h1");
 
 /*----- event listeners -----*/
-computerGridEl.addEventListener("click", function (e) {
-  cellIndex = e.target.cellIndex;
-  rowIndex = e.target.parentElement.rowIndex;
-  playGame();
-});
+computerGridEl.addEventListener("click", setPlayerClick);
 resetEl.addEventListener("click", playAgain);
 playerGridEl.addEventListener("click", playerChoose);
 document.querySelectorAll(".ships").forEach((ship) => {
@@ -294,6 +290,12 @@ function playerHitCheck(cellIdx, rowIdx) {
       player.playerIsHit = false;
     }
   }
+}
+
+function setPlayerClick(e){
+  cellIndex = e.target.cellIndex;
+  rowIndex = e.target.parentElement.rowIndex;
+  playGame();
 }
 /*----------------Helper Functions ----------------- */
 //
