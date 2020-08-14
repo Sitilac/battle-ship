@@ -23,3 +23,8 @@
 ## <span style="text-decoration: underline">Planned Features</span>
 
 ### I plan on adding drag and drop to the ships in order to give maximum control to the player as well as speed up the placing of ships. This will also allow me to use actual ship images as well.
+
+#### <span style="text-decoration: underline">Tile Credits</span>
+[Water](https://opengameart.org/content/basic-map-32x32-by-ivan-voirol)
+[Metal](https://pixanna.nl/tiles/science/)
+[Lava](https://opengameart.org/content/2-seamless-lava-tiles)
