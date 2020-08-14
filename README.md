@@ -7,9 +7,9 @@
 ### HTML, CSS, and Javascript
 
 ## <span style="text-decoration: underline">In Game Screenshots</span>
-![Start](https://imgur.com/QKNL7t1)
-![Playing](https://imgur.com/TR7O3n5)
-![Finished](https://imgur.com/Q2QzYPZ)
+![Start](https://imgur.com/QKNL7t1.jpg)
+![Playing](https://imgur.com/TR7O3n5.jpg)
+![Finished](https://imgur.com/Q2QzYPZ.jpg)
 ## <span style="text-decoration: underline">Starting the Game</span>
 
 * The game starts out with the player grid and your ships on the right.
