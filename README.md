@@ -1,7 +1,8 @@
 # BATTLESHIP
 
 ### Battleship is a war-themed board game for two players in which the opponents try to guess the location of their opponent's warships and sink them.
-
+## <span style="text-decoration: underline">Wireframe</span>
+![Wireframe](https://i.imgur.com/aPRVBmS.jpg)
 ## <span style="text-decoration: underline">Technologies Used</span>
 
 ### HTML, CSS, and Javascript
